@@ -5,7 +5,6 @@ import createRootReducer from './reducers'
 
 const middleWare = [thunk]
 const initState = {}
-
 const composeFunc =
   process.env.NODE_ENV === 'development' ? composeWithDevTools : compose
 const composedEnchanters = composeFunc(applyMiddleware(...middleWare))
