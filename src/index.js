@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import './css/tailwind.output.css'
-import Board from './components/board'
+import './client/css/tailwind.output.css'
+import Board from './client/components/board'
 import * as serviceWorker from './serviceWorker'
-import store from './redux'
+import store from './client/redux'
 
 ReactDOM.render(
   <Provider store={store}>

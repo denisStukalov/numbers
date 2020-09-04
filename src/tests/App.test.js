@@ -1,8 +1,8 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { render } from '@testing-library/react'
-import Board from './components/board'
-import store from './redux'
+import Board from '../client/components/board'
+import store from '../client/redux'
 
 test('renders learn react link', () => {
   const { getByText } = render(
