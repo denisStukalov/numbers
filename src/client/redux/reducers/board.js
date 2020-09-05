@@ -2,7 +2,7 @@ const UPDATE_SCORE = 'UPDATE_SCORE'
 
 const initState = {
   size: 4,
-  board: Array.from(Array(16), (c, index) => ({ value: 0 })),
+  field: Array.from(Array(16), (c, index) => ({ value: 0, index })),
   score: 0
 }
 
