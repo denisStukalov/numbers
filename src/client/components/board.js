@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateScore } from '../redux/reducers/board'
+import { setRandomCell } from '../redux/reducers/board'
 import Cell from './cell'
 
 const Board = () => {
@@ -14,11 +14,15 @@ const Board = () => {
     acc[acc.length - 1] = [...acc[acc.length - 1], rec]
     return acc
   }, [])
-  console.log(rows.length)
+
+  useEffect(() => {
+    dispatch(setRandomCell())
+  }, [])
+
   return (
     <div className='min-w-screen min-h-screen bg-gray-900 flex flex-wrap content-around justify-center'>
       <div className='bg-indigo-600 rounded-lg text-white'>
-        <div className='bg-indigo-700 rounded-t-lg pl-5'>Score: 0</div>
+        <div className='bg-indigo-700 rounded-t-lg pl-5'>Score: {score}</div>
         <div className='w-full flex justify-center p-5'>
           <div className='border border-gray-100'>
             {rows.map((row, index) => {
