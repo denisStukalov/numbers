@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setRandomCell } from '../redux/reducers/board'
+import { setRandomCell, moveLeft } from '../redux/reducers/board'
 import Cell from './cell'
 
 const Board = () => {
+  const ALLOWED_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
   const { field, score, size } = useSelector((s) => s.board)
   const dispatch = useDispatch()
 
@@ -18,6 +19,31 @@ const Board = () => {
   useEffect(() => {
     dispatch(setRandomCell())
   }, [])
+
+  const onKeyDown = ({ key }) => {
+    if (ALLOWED_KEYS.includes(key)) {
+      switch (key) {
+        case 'ArrowUp':
+          break
+        case 'ArrowDown':
+          break
+        case 'ArrowLeft':
+          dispatch(moveLeft())
+          break
+        case 'ArrowRight':
+          break
+      }
+    }
+  }
+
+  // Add event listeners
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown)
+    // Remove event listeners on cleanup
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, []) // Empty array ensures that effect is only run on mount and unmount
 
   return (
     <div className='min-w-screen min-h-screen bg-gray-900 flex flex-wrap content-around justify-center'>
