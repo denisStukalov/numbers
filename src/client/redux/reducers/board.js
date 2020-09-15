@@ -96,10 +96,10 @@ const moveRightFunc = (cells, size) => {
         }
       }
     }
-    field.map((f) => {
-      f.summed = false
-    })
   } while (hasChanges)
+  field.map((f) => {
+    f.summed = false
+  })
   return field
 }
 
