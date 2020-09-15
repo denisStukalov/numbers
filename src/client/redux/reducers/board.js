@@ -103,6 +103,76 @@ const moveRightFunc = (cells, size) => {
   return field
 }
 
+const moveUpFunc = (cells, size) => {
+  const field = [...cells]
+  let hasChanges = false
+  do {
+    hasChanges = false
+    for (let column = 0; column < size; column++) {
+      for (let row = 0; row < size - 1; row++) {
+        const indexFirst = column + row * size
+        const indexSecond = column + (row + 1) * size
+        if (
+          (field[indexFirst].value === 0 && field[indexSecond].value === 0) ||
+          field[indexFirst].summed ||
+          field[indexSecond].summed
+        ) {
+          continue
+        }
+        if (
+          field[indexFirst].value === field[indexSecond].value ||
+          field[indexFirst].value === 0
+        ) {
+          field[indexFirst].summed = field[indexFirst].value !== 0
+          field[indexFirst].value =
+            field[indexFirst].value + field[indexSecond].value
+          field[indexSecond].value = 0
+          hasChanges = true
+        }
+      }
+    }
+  } while (hasChanges)
+  field.map((f) => {
+    f.summed = false
+  })
+  return field
+}
+
+const moveDownFunc = (cells, size) => {
+  const field = [...cells]
+  let hasChanges = false
+  do {
+    hasChanges = false
+    for (let column = 0; column < size; column++) {
+      for (let row = size - 1; row > 0; row--) {
+        const indexFirst = column + row * size
+        const indexSecond = column + (row - 1) * size
+        if (
+          (field[indexFirst].value === 0 && field[indexSecond].value === 0) ||
+          field[indexFirst].summed ||
+          field[indexSecond].summed
+        ) {
+          continue
+        }
+        if (
+          field[indexFirst].value === field[indexSecond].value ||
+          field[indexFirst].value === 0
+        ) {
+          field[indexFirst].summed = field[indexFirst].value !== 0
+          field[indexFirst].value =
+            field[indexFirst].value + field[indexSecond].value
+          field[indexSecond].value = 0
+          hasChanges = true
+        }
+      }
+    }
+  } while (hasChanges)
+  field.map((f) => {
+    f.summed = false
+  })
+  return field
+}
+
 export function updateScore(score) {
   return { type: UPDATE_SCORE, score }
 }
@@ -123,13 +193,28 @@ export function moveRight() {
   }
 }
 
+export function moveUp() {
+  return (dispatch, getState) => {
+    const size = getState().board.size
+    const field = moveUpFunc([...getState().board.field], size)
+    return dispatch({ type: MOVE_CELLS, field })
+  }
+}
+
+export function moveDown() {
+  return (dispatch, getState) => {
+    const size = getState().board.size
+    const field = moveDownFunc([...getState().board.field], size)
+    return dispatch({ type: MOVE_CELLS, field })
+  }
+}
+
 export function setRandomCell() {
   return (dispatch, getState) => {
     const freeCells = getState().board.field.filter((c) => c.value === 0)
     return dispatch({
       type: SET_RANDOM_CELL,
       index: freeCells[Math.floor(Math.random() * freeCells.length)].index
-      //index: 4
     })
   }
 }

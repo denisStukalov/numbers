@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setRandomCell, moveLeft, moveRight } from '../redux/reducers/board'
+import {
+  setRandomCell,
+  moveLeft,
+  moveRight,
+  moveUp,
+  moveDown
+} from '../redux/reducers/board'
 import Cell from './cell'
 
 const Board = () => {
@@ -24,8 +30,12 @@ const Board = () => {
     if (ALLOWED_KEYS.includes(key)) {
       switch (key) {
         case 'ArrowUp':
+          dispatch(moveUp())
+          dispatch(setRandomCell())
           break
         case 'ArrowDown':
+          dispatch(moveDown())
+          dispatch(setRandomCell())
           break
         case 'ArrowLeft':
           dispatch(moveLeft())
