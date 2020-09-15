@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setRandomCell, moveLeft } from '../redux/reducers/board'
+import { setRandomCell, moveLeft, moveRight } from '../redux/reducers/board'
 import Cell from './cell'
 
 const Board = () => {
@@ -29,8 +29,11 @@ const Board = () => {
           break
         case 'ArrowLeft':
           dispatch(moveLeft())
+          dispatch(setRandomCell())
           break
         case 'ArrowRight':
+          dispatch(moveRight())
+          dispatch(setRandomCell())
           break
       }
     }
