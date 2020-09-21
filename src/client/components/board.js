@@ -11,7 +11,7 @@ import Cell from './cell'
 
 const Board = () => {
   const ALLOWED_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
-  const { field, score, size } = useSelector((s) => s.board)
+  const { field, score, size, step } = useSelector((s) => s.board)
   const dispatch = useDispatch()
 
   const rows = field.reduce((acc, rec, index) => {
@@ -26,24 +26,24 @@ const Board = () => {
     dispatch(setRandomCell())
   }, [])
 
+  useEffect(() => {
+    dispatch(setRandomCell())
+  }, [step])
+
   const onKeyDown = ({ key }) => {
     if (ALLOWED_KEYS.includes(key)) {
       switch (key) {
         case 'ArrowUp':
           dispatch(moveUp())
-          dispatch(setRandomCell())
           break
         case 'ArrowDown':
           dispatch(moveDown())
-          dispatch(setRandomCell())
           break
         case 'ArrowLeft':
           dispatch(moveLeft())
-          dispatch(setRandomCell())
           break
         case 'ArrowRight':
           dispatch(moveRight())
-          dispatch(setRandomCell())
           break
       }
     }

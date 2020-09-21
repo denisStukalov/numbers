@@ -9,7 +9,8 @@ const initState = {
     index,
     summed: false
   })),
-  score: 0
+  score: 0,
+  step: 0
 }
 
 export default (state = initState, action) => {
@@ -22,7 +23,9 @@ export default (state = initState, action) => {
     case MOVE_CELLS:
       return {
         ...state,
-        field: action.field
+        field: action.field,
+        score: state.score + action.score,
+        step: state.step + action.nextStep ? 1 : 0
       }
     case SET_RANDOM_CELL:
       return {
@@ -39,7 +42,9 @@ export default (state = initState, action) => {
 
 const moveLeftFunc = (cells, size) => {
   const field = [...cells]
+  let score = 0
   let hasChanges = false
+  let nextStep = false
   do {
     hasChanges = false
     for (let row = 0; row < size; row++) {
@@ -56,10 +61,15 @@ const moveLeftFunc = (cells, size) => {
           field[index].value === field[index + 1].value ||
           field[index].value === 0
         ) {
+          hasChanges = true
+          nextStep = true
+          score =
+            field[index].value === 0
+              ? score + 0
+              : score + field[index].value + field[index + 1].value
           field[index].summed = field[index].value !== 0
           field[index].value = field[index].value + field[index + 1].value
           field[index + 1].value = 0
-          hasChanges = true
         }
       }
     }
@@ -67,12 +77,14 @@ const moveLeftFunc = (cells, size) => {
   field.map((f) => {
     f.summed = false
   })
-  return field
+  return { field, score, nextStep }
 }
 
 const moveRightFunc = (cells, size) => {
   const field = [...cells]
+  let score = 0
   let hasChanges = false
+  let nextStep = false
   do {
     hasChanges = false
     for (let row = 0; row < size; row++) {
@@ -89,10 +101,15 @@ const moveRightFunc = (cells, size) => {
           field[index].value === field[index - 1].value ||
           field[index].value === 0
         ) {
+          hasChanges = true
+          nextStep = true
+          score =
+            field[index].value === 0
+              ? score + 0
+              : score + field[index].value + field[index - 1].value
           field[index].summed = field[index].value !== 0
           field[index].value = field[index].value + field[index - 1].value
           field[index - 1].value = 0
-          hasChanges = true
         }
       }
     }
@@ -100,12 +117,14 @@ const moveRightFunc = (cells, size) => {
   field.map((f) => {
     f.summed = false
   })
-  return field
+  return { field, score, nextStep }
 }
 
 const moveUpFunc = (cells, size) => {
   const field = [...cells]
+  let score = 0
   let hasChanges = false
+  let nextStep = false
   do {
     hasChanges = false
     for (let column = 0; column < size; column++) {
@@ -123,11 +142,16 @@ const moveUpFunc = (cells, size) => {
           field[indexFirst].value === field[indexSecond].value ||
           field[indexFirst].value === 0
         ) {
+          hasChanges = true
+          nextStep = true
+          score =
+            field[indexFirst].value === 0
+              ? score + 0
+              : score + field[indexFirst].value + field[indexSecond].value
           field[indexFirst].summed = field[indexFirst].value !== 0
           field[indexFirst].value =
             field[indexFirst].value + field[indexSecond].value
           field[indexSecond].value = 0
-          hasChanges = true
         }
       }
     }
@@ -135,12 +159,14 @@ const moveUpFunc = (cells, size) => {
   field.map((f) => {
     f.summed = false
   })
-  return field
+  return { field, score, nextStep }
 }
 
 const moveDownFunc = (cells, size) => {
   const field = [...cells]
+  let score = 0
   let hasChanges = false
+  let nextStep = false
   do {
     hasChanges = false
     for (let column = 0; column < size; column++) {
@@ -158,11 +184,16 @@ const moveDownFunc = (cells, size) => {
           field[indexFirst].value === field[indexSecond].value ||
           field[indexFirst].value === 0
         ) {
+          hasChanges = true
+          nextStep = true
+          score =
+            field[indexFirst].value === 0
+              ? score + 0
+              : score + field[indexFirst].value + field[indexSecond].value
           field[indexFirst].summed = field[indexFirst].value !== 0
           field[indexFirst].value =
             field[indexFirst].value + field[indexSecond].value
           field[indexSecond].value = 0
-          hasChanges = true
         }
       }
     }
@@ -170,7 +201,7 @@ const moveDownFunc = (cells, size) => {
   field.map((f) => {
     f.summed = false
   })
-  return field
+  return { field, score, nextStep }
 }
 
 export function updateScore(score) {
@@ -180,32 +211,44 @@ export function updateScore(score) {
 export function moveLeft() {
   return (dispatch, getState) => {
     const size = getState().board.size
-    const field = moveLeftFunc([...getState().board.field], size)
-    return dispatch({ type: MOVE_CELLS, field })
+    const { field, score, nextStep } = moveLeftFunc(
+      [...getState().board.field],
+      size
+    )
+    return dispatch({ type: MOVE_CELLS, field, score, nextStep })
   }
 }
 
 export function moveRight() {
   return (dispatch, getState) => {
     const size = getState().board.size
-    const field = moveRightFunc([...getState().board.field], size)
-    return dispatch({ type: MOVE_CELLS, field })
+    const { field, score, nextStep } = moveRightFunc(
+      [...getState().board.field],
+      size
+    )
+    return dispatch({ type: MOVE_CELLS, field, score, nextStep })
   }
 }
 
 export function moveUp() {
   return (dispatch, getState) => {
     const size = getState().board.size
-    const field = moveUpFunc([...getState().board.field], size)
-    return dispatch({ type: MOVE_CELLS, field })
+    const { field, score, nextStep } = moveUpFunc(
+      [...getState().board.field],
+      size
+    )
+    return dispatch({ type: MOVE_CELLS, field, score, nextStep })
   }
 }
 
 export function moveDown() {
   return (dispatch, getState) => {
     const size = getState().board.size
-    const field = moveDownFunc([...getState().board.field], size)
-    return dispatch({ type: MOVE_CELLS, field })
+    const { field, score, nextStep } = moveDownFunc(
+      [...getState().board.field],
+      size
+    )
+    return dispatch({ type: MOVE_CELLS, field, score, nextStep })
   }
 }
 
