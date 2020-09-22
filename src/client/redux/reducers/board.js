@@ -25,7 +25,7 @@ export default (state = initState, action) => {
         ...state,
         field: action.field,
         score: state.score + action.score,
-        step: state.step + action.nextStep ? 1 : 0
+        step: state.step + (action.nextStep ? 1 : 0)
       }
     case SET_RANDOM_CELL:
       return {
