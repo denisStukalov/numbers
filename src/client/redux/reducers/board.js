@@ -1,6 +1,7 @@
 const UPDATE_SCORE = 'UPDATE_SCORE'
 const SET_RANDOM_CELL = 'SET_RANDOM_CELL'
 const MOVE_CELLS = 'MOVE_CELLS'
+const GAME_OVER = 'GAME_OVER'
 
 const initState = {
   size: 4,
@@ -10,7 +11,8 @@ const initState = {
     summed: false
   })),
   score: 0,
-  step: 0
+  step: 0,
+  gameover: false
 }
 
 export default (state = initState, action) => {
@@ -34,6 +36,11 @@ export default (state = initState, action) => {
           ...state.field.filter((f) => f.index !== action.index),
           { value: 2, index: action.index, summed: false }
         ].sort((a, b) => a.index - b.index)
+      }
+    case GAME_OVER:
+      return {
+        ...state,
+        gameover: true
       }
     default:
       return state
@@ -204,6 +211,17 @@ const moveDownFunc = (cells, size) => {
   return { field, score, nextStep }
 }
 
+const checkStepAvaliable = (cells, size) => {
+  if (
+    moveDownFunc([...cells], size).nextStep ||
+    moveUpFunc([...cells], size).nextStep ||
+    moveLeftFunc([...cells], size).nextStep ||
+    moveDownFunc([...cells], size).nextStep
+  )
+    return true
+  return false
+}
+
 export function updateScore(score) {
   return { type: UPDATE_SCORE, score }
 }
@@ -254,7 +272,14 @@ export function moveDown() {
 
 export function setRandomCell() {
   return (dispatch, getState) => {
-    const freeCells = getState().board.field.filter((c) => c.value === 0)
+    const { field, size } = getState().board
+    const freeCells = field.filter((c) => c.value === 0)
+    if (!checkStepAvaliable(field, size)) {
+      return dispatch({
+        type: GAME_OVER
+      })
+    }
+
     return dispatch({
       type: SET_RANDOM_CELL,
       index: freeCells[Math.floor(Math.random() * freeCells.length)].index
