@@ -5,7 +5,7 @@ const GAME_OVER = 'GAME_OVER'
 
 const initState = {
   size: 4,
-  field: Array.from(Array(16), (c, index) => ({
+  field: Array.from(Array(15), (c, index) => ({
     value: 0,
     index,
     summed: false
@@ -212,13 +212,21 @@ const moveDownFunc = (cells, size) => {
 }
 
 const checkStepAvaliable = (cells, size) => {
-  if (
-    moveDownFunc([...cells], size).nextStep ||
-    moveUpFunc([...cells], size).nextStep ||
-    moveLeftFunc([...cells], size).nextStep ||
-    moveDownFunc([...cells], size).nextStep
-  )
-    return true
+  if (cells.filter((c) => c.value === 0).length > 1) return true
+
+  for (let column = 0; column < size - 1; column++) {
+    for (let row = 0; row < size - 1; row++) {
+      const index = column + row * size
+      const newColumnIndex = column + 1 + row * size
+      const newRowIndex = column + (row + 1) * size
+      if (
+        cells[index].value === cells[newColumnIndex].value ||
+        cells[index].value === cells[newRowIndex].value
+      ) {
+        return true
+      }
+    }
+  }
   return false
 }
 
@@ -274,7 +282,10 @@ export function setRandomCell() {
   return (dispatch, getState) => {
     const { field, size } = getState().board
     const freeCells = field.filter((c) => c.value === 0)
-    if (!checkStepAvaliable(field, size)) {
+    if (
+      freeCells.length !== field.length &&
+      !checkStepAvaliable([...field], size)
+    ) {
       return dispatch({
         type: GAME_OVER
       })
