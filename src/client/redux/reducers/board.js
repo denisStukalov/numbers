@@ -5,7 +5,7 @@ const GAME_OVER = 'GAME_OVER'
 
 const initState = {
   size: 4,
-  field: Array.from(Array(15), (c, index) => ({
+  field: Array.from(Array(16), (c, index) => ({
     value: 0,
     index,
     summed: false
