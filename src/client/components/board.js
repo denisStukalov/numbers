@@ -11,7 +11,7 @@ import Cell from './cell'
 
 const Board = () => {
   const ALLOWED_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
-  const { field, score, size, step } = useSelector((s) => s.board)
+  const { field, score, size, step, gameover } = useSelector((s) => s.board)
   const dispatch = useDispatch()
 
   const rows = field.reduce((acc, rec, index) => {
@@ -60,7 +60,11 @@ const Board = () => {
 
   return (
     <div className='min-w-screen min-h-screen bg-gray-900 flex flex-wrap content-around justify-center'>
-      <div className='bg-indigo-600 rounded-lg text-white'>
+      <div
+        className={`${
+          gameover ? 'bg-yellow-600' : 'bg-indigo-600'
+        } rounded-lg text-white`}
+      >
         <div className='bg-indigo-700 rounded-t-lg pl-5'>Score: {score}</div>
         <div className='w-full flex justify-center p-5'>
           <div className='border border-gray-100'>

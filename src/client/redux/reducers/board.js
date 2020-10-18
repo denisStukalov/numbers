@@ -32,14 +32,12 @@ export default (state = initState, action) => {
     case SET_RANDOM_CELL:
       return {
         ...state,
-        field: [
-          ...state.field.filter((f) => f.index !== action.index),
-          { value: 2, index: action.index, summed: false }
-        ].sort((a, b) => a.index - b.index)
+        field: action.field
       }
     case GAME_OVER:
       return {
         ...state,
+        field: action.field,
         gameover: true
       }
     default:
@@ -282,18 +280,18 @@ export function setRandomCell() {
   return (dispatch, getState) => {
     const { field, size } = getState().board
     const freeCells = field.filter((c) => c.value === 0)
-    if (
-      freeCells.length !== field.length &&
-      !checkStepAvaliable([...field], size)
-    ) {
-      return dispatch({
-        type: GAME_OVER
-      })
-    }
+    const randomIndex =
+      freeCells[Math.floor(Math.random() * freeCells.length)].index
+    const newfield = [
+      ...field.filter((f) => f.index !== randomIndex),
+      { value: 2, index: randomIndex, summed: false }
+    ].sort((a, b) => a.index - b.index)
 
+    const gameOver =
+      freeCells.length === 1 && !checkStepAvaliable([...newfield], size)
     return dispatch({
-      type: SET_RANDOM_CELL,
-      index: freeCells[Math.floor(Math.random() * freeCells.length)].index
+      type: gameOver ? GAME_OVER : SET_RANDOM_CELL,
+      field: newfield
     })
   }
 }
