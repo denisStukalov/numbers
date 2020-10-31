@@ -8,6 +8,7 @@ import {
   moveDown
 } from '../redux/reducers/board'
 import Cell from './cell'
+import Modal from './modal'
 
 const Board = () => {
   const ALLOWED_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
@@ -49,34 +50,30 @@ const Board = () => {
     }
   }
 
-  // Add event listeners
   useEffect(() => {
     document.addEventListener('keydown', onKeyDown)
-    // Remove event listeners on cleanup
     return () => {
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, []) // Empty array ensures that effect is only run on mount and unmount
-
+  }, [])
   return (
-    <div className='min-w-screen min-h-screen bg-gray-900 flex flex-wrap content-around justify-center'>
-      <div
-        className={`${
-          gameover ? 'bg-yellow-600' : 'bg-indigo-600'
-        } rounded-lg text-white`}
-      >
-        <div className='bg-indigo-700 rounded-t-lg pl-5'>Score: {score}</div>
-        <div className='w-full flex justify-center p-5'>
-          <div className='border border-gray-100'>
-            {rows.map((row, index) => {
-              return (
-                <div key={index} className='flex'>
-                  {row.map((cell) => {
-                    return <Cell value={cell.value} key={cell.index} />
-                  })}
-                </div>
-              )
-            })}
+    <div>
+      <Modal show={gameover} />
+      <div className='min-w-screen min-h-screen bg-gray-900 flex flex-wrap content-around justify-center'>
+        <div className='bg-indigo-600 rounded-lg text-white'>
+          <div className='bg-indigo-700 rounded-t-lg pl-5'>Score: {score}</div>
+          <div className='w-full flex justify-center p-5'>
+            <div className='border border-gray-100'>
+              {rows.map((row, index) => {
+                return (
+                  <div key={index} className='flex'>
+                    {row.map((cell) => {
+                      return <Cell value={cell.value} key={cell.index} />
+                    })}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>
